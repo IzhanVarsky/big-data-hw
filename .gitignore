@@ -1,4 +1,5 @@
 *venv*
 data
 .idea
-__py
+__pycache__/
+src/*.pth
