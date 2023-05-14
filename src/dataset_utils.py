@@ -8,14 +8,14 @@ def get_FashionMNIST_datasets(nesting_level=".."):
     train_dataset = datasets.FashionMNIST(
         root=dataset_root,
         train=True,
-        download=True,
+        download=False,
         transform=ToTensor()
     )
 
     test_dataset = datasets.FashionMNIST(
         root=dataset_root,
         train=False,
-        download=True,
+        download=False,
         transform=ToTensor()
     )
     return train_dataset, test_dataset
