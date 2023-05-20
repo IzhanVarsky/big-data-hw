@@ -31,6 +31,7 @@ jobs:
         uses: iterative/setup-dvc@v1
       - name: Pull data from DVC
         run: |
+          dvc remote modify storage password ${{ secrets.MY_SSH_SERVER_PASSWORD }}
           dvc pull
       - name: Build and push
         uses: docker/build-push-action@v4
