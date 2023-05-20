@@ -130,3 +130,4 @@ class Classifier(nn.Module):
         print("Total test F1_macro score:", f1_macro)
         print("Confusion matrix:")
         print(conf_matrix)
+        return epoch_loss, epoch_acc, f1_macro, conf_matrix

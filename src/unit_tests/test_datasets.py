@@ -4,14 +4,13 @@ import unittest
 
 import torch
 
-from dataset_utils import get_FashionMNIST_datasets
-
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
+from dataset_utils import get_FashionMNIST_datasets
 
 
 class TestPreprocess(unittest.TestCase):
     def setUp(self) -> None:
-        self.train_dataset, self.test_dataset = get_FashionMNIST_datasets(nesting_level='../..')
+        self.train_dataset, self.test_dataset = get_FashionMNIST_datasets(nesting_level='.')
 
     def test_datasets_len(self):
         self.assertEqual(len(self.train_dataset), 60000)

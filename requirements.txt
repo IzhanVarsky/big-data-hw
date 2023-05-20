@@ -5,3 +5,5 @@ numpy
 tqdm
 scikit-learn
 dvc[all]
+pyyaml
+coverage

@@ -2,11 +2,11 @@ from torch import nn
 
 
 class CNNModel(nn.Module):
-    def __init__(self):
+    def __init__(self, input_img_size=28, num_channels=1, num_classes=10):
         super(CNNModel, self).__init__()
-        self.num_channels = 1
-        self.num_classes = 10
-        self.in_sz = 28
+        self.num_channels = num_channels
+        self.num_classes = num_classes
+        self.in_sz = input_img_size
         self.layers = nn.Sequential(
             nn.Conv2d(self.num_channels, 8, kernel_size=3, padding=1),
             nn.ReLU(),

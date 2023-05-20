@@ -1,4 +1,6 @@
 *venv*
 .idea
 __pycache__/
-src/*.pth
+checkpoints/*.pth
+/checkpoints
+.coverage

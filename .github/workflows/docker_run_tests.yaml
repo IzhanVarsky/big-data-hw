@@ -1,0 +1,21 @@
+name: CD - run tests in docker container
+
+on:
+  workflow_run:
+    workflows: [ CI ]
+    types:
+      - completed
+
+jobs:
+  cd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: izhanvarsky
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Pull with compose
+        run: docker-compose pull
+      - name: Run tests
+        run: docker-compose up --abort-on-container-exit

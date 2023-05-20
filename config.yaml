@@ -1,0 +1,9 @@
+model:
+  input_img_size: 28
+  num_channels: 1
+  num_classes: 10
+
+train_params:
+  lr: 1e-4
+
+ckpt_path: "checkpoints/CNNModel_FashionMNIST_best_metric_model.pth"
