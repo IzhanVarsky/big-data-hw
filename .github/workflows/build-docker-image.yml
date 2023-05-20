@@ -25,8 +25,9 @@ jobs:
         with:
           username: izhanvarsky
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Pull data from DVC
+      - name: Setup DVC
         uses: iterative/setup-dvc@v1
+      - name: Pull data from DVC
         run: |
           dvc pull
       - name: Build and push
