@@ -10,6 +10,7 @@ from dataset_utils import get_FashionMNIST_datasets
 
 class TestPreprocess(unittest.TestCase):
     def setUp(self) -> None:
+        print(f">> Testing datasets")
         self.train_dataset, self.test_dataset = get_FashionMNIST_datasets(nesting_level='.')
 
     def test_datasets_len(self):
