@@ -4,3 +4,4 @@ __pycache__/
 checkpoints/*.pth
 /checkpoints
 .coverage
+*.zip

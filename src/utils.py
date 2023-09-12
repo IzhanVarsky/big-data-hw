@@ -1,5 +1,13 @@
 import torch
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s:%(name)s:%(levelname)s:`>> %(message)s`',
+    handlers=[logging.StreamHandler()]
+)
+
 
 class EarlyStopping:
     def __init__(self, model_name, patience=15, min_delta=0,
@@ -33,8 +41,8 @@ class EarlyStopping:
                 self.early_stop = True
 
     def save_best_model(self, model):
-        print("-" * 100)
-        print(f">>> Saving the current {self.model_name} model with the best metric value...")
+        logging.info("-" * 100)
+        logging.info(f">>> Saving the current {self.model_name} model with the best metric value...")
         torch.save(model.state_dict(), self.get_checkpoint_name())
 
     def get_checkpoint_name(self):
