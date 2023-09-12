@@ -97,19 +97,19 @@ class Classifier(nn.Module):
             start_time = datetime.now()
 
             logging.info("=" * 100)
-            logging.info('Epoch {}/{}'.format(epoch + 1, num_epochs))
+            logging.info(f'Epoch {epoch + 1}/{num_epochs}')
             logging.info('-' * 10)
 
             for phase in ['train', 'test']:
-                logging.info("--- Cur phase:", phase)
+                logging.info(f"--- Cur phase: {phase}")
                 epoch_loss, epoch_acc, f1_macro, conf_matrix = \
                     self.train_epoch(dataloaders[phase]) if phase == 'train' \
                         else self.test_epoch(dataloaders[phase])
                 saved_epoch_losses[phase].append(epoch_loss)
                 saved_epoch_accuracies[phase].append(epoch_acc)
                 saved_epoch_f1_macros[phase].append(f1_macro)
-                logging.info('{} loss: {:.4f}, acc: {:.4f}, f1_macro: {:.4f}'
-                      .format(phase, epoch_loss, epoch_acc, f1_macro))
+                logging.info(f'{phase} loss: {epoch_loss:.4f}, '
+                             f'acc: {epoch_acc:.4f}, f1_macro: {f1_macro:.4f}')
                 if self.print_conf_matrix:
                     logging.info("Confusion matrix:")
                     logging.info(conf_matrix)
@@ -133,9 +133,9 @@ class Classifier(nn.Module):
         logging.info("*" * 25)
         logging.info(f">> Testing {self.model_name} network")
         epoch_loss, epoch_acc, f1_macro, conf_matrix = self.test_epoch(dataloader)
-        logging.info("Total test loss:", epoch_loss)
-        logging.info("Total test accuracy:", epoch_acc)
-        logging.info("Total test F1_macro score:", f1_macro)
+        logging.info(f"Total test loss: {epoch_loss}")
+        logging.info(f"Total test accuracy: {epoch_acc}")
+        logging.info(f"Total test F1_macro score: {f1_macro}")
         logging.info("Confusion matrix:")
         logging.info(conf_matrix)
         return epoch_loss, epoch_acc, f1_macro, conf_matrix
