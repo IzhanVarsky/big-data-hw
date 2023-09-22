@@ -20,5 +20,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Pull with compose
         run: docker-compose pull
+      - name: Create .env file
+        run: |
+          touch .env
+          echo POSTGRES_USER="${{ secrets.POSTGRES_USER }}" >> .env
+          echo POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo POSTGRES_DBNAME="${{ secrets.POSTGRES_DBNAME }}" >> .env
       - name: Run tests
         run: docker-compose up --abort-on-container-exit

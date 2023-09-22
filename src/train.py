@@ -2,13 +2,10 @@ from dataset_utils import get_FashionMNIST_dataloaders
 from fashion_mnist_classifier import get_FashionMNIST_classifier
 from utils import EarlyStopping
 
-import logging
+from logger import Logger
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s:%(name)s:%(levelname)s:`>> %(message)s`',
-    handlers=[logging.StreamHandler()]
-)
+logger = Logger(show=True).get_logger(__name__)
+
 
 def run_train():
     dataloaders = get_FashionMNIST_dataloaders()
@@ -23,18 +20,18 @@ def run_train():
     num_epochs = 2
     classifier.train_model(dataloaders, early_stopping, num_epochs=num_epochs)
 
-    logging.info('=' * 50)
-    logging.info('Testing LAST model on TRAIN dataset...')
+    logger.info('=' * 50)
+    logger.info('Testing LAST model on TRAIN dataset...')
     classifier.test_model(dataloaders['train'])
-    logging.info('Testing LAST model on TEST dataset...')
+    logger.info('Testing LAST model on TEST dataset...')
     classifier.test_model(dataloaders['test'])
 
-    logging.info('=' * 50)
-    logging.info('Loading and testing the BEST model...')
+    logger.info('=' * 50)
+    logger.info('Loading and testing the BEST model...')
     classifier.load_checkpoint(early_stopping.get_checkpoint_name())
-    logging.info('Testing on TRAIN dataset...')
+    logger.info('Testing on TRAIN dataset...')
     classifier.test_model(dataloaders['train'])
-    logging.info('Testing on TEST dataset...')
+    logger.info('Testing on TEST dataset...')
     classifier.test_model(dataloaders['test'])
 
 

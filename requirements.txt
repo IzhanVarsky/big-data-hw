@@ -7,3 +7,5 @@ scikit-learn
 # dvc[all]
 pyyaml
 coverage
+pandas
+greenplum-python==1.0.1

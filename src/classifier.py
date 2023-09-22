@@ -8,13 +8,9 @@ from sklearn.metrics import confusion_matrix
 from torch import nn
 from tqdm import tqdm
 
-import logging
+from logger import Logger
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s:%(name)s:%(levelname)s:`>> %(message)s`',
-    handlers=[logging.StreamHandler()]
-)
+logger = Logger(show=True).get_logger(__name__)
 
 tensor_to_pil = T.ToPILImage()
 
@@ -81,9 +77,9 @@ class Classifier(nn.Module):
         return self.run_epoch('train', dataloader)
 
     def train_model(self, dataloaders, early_stopping, num_epochs=5):
-        logging.info(f"Training model {self.model_name} with params:")
-        logging.info(f"Optim: {self.optimizer}")
-        logging.info(f"Criterion: {self.criterion}")
+        logger.info(f"Training model {self.model_name} with params:")
+        logger.info(f"Optim: {self.optimizer}")
+        logger.info(f"Criterion: {self.criterion}")
 
         saved_epoch_losses = {'train': [], 'test': []}
         saved_epoch_accuracies = {'train': [], 'test': []}
@@ -96,46 +92,46 @@ class Classifier(nn.Module):
         for epoch in range(num_epochs):
             start_time = datetime.now()
 
-            logging.info("=" * 100)
-            logging.info(f'Epoch {epoch + 1}/{num_epochs}')
-            logging.info('-' * 10)
+            logger.info("=" * 100)
+            logger.info(f'Epoch {epoch + 1}/{num_epochs}')
+            logger.info('-' * 10)
 
             for phase in ['train', 'test']:
-                logging.info(f"--- Cur phase: {phase}")
+                logger.info(f"--- Cur phase: {phase}")
                 epoch_loss, epoch_acc, f1_macro, conf_matrix = \
                     self.train_epoch(dataloaders[phase]) if phase == 'train' \
                         else self.test_epoch(dataloaders[phase])
                 saved_epoch_losses[phase].append(epoch_loss)
                 saved_epoch_accuracies[phase].append(epoch_acc)
                 saved_epoch_f1_macros[phase].append(f1_macro)
-                logging.info(f'{phase} loss: {epoch_loss:.4f}, '
+                logger.info(f'{phase} loss: {epoch_loss:.4f}, '
                              f'acc: {epoch_acc:.4f}, f1_macro: {f1_macro:.4f}')
                 if self.print_conf_matrix:
-                    logging.info("Confusion matrix:")
-                    logging.info(conf_matrix)
+                    logger.info("Confusion matrix:")
+                    logger.info(conf_matrix)
 
             end_time = datetime.now()
             epoch_time = (end_time - start_time).total_seconds()
-            logging.info("-" * 10)
-            logging.info(f"Epoch Time: {math.floor(epoch_time // 60)}:{math.floor(epoch_time % 60)}")
+            logger.info("-" * 10)
+            logger.info(f"Epoch Time: {math.floor(epoch_time // 60)}:{math.floor(epoch_time % 60)}")
 
             early_stopping(save_by['test'][-1], self.model)
             if early_stopping.early_stop:
-                logging.info('*** Early stopping ***')
+                logger.info('*** Early stopping ***')
                 break
             if f1_macro > 0.95:
-                logging.info('*** Needed F1 macro achieved ***')
+                logger.info('*** Needed F1 macro achieved ***')
                 break
-        logging.info("*** Training Completed ***")
+        logger.info("*** Training Completed ***")
         return self.model
 
     def test_model(self, dataloader):
-        logging.info("*" * 25)
-        logging.info(f">> Testing {self.model_name} network")
+        logger.info("*" * 25)
+        logger.info(f">> Testing {self.model_name} network")
         epoch_loss, epoch_acc, f1_macro, conf_matrix = self.test_epoch(dataloader)
-        logging.info(f"Total test loss: {epoch_loss}")
-        logging.info(f"Total test accuracy: {epoch_acc}")
-        logging.info(f"Total test F1_macro score: {f1_macro}")
-        logging.info("Confusion matrix:")
-        logging.info(conf_matrix)
+        logger.info(f"Total test loss: {epoch_loss}")
+        logger.info(f"Total test accuracy: {epoch_acc}")
+        logger.info(f"Total test F1_macro score: {f1_macro}")
+        logger.info("Confusion matrix:")
+        logger.info(conf_matrix)
         return epoch_loss, epoch_acc, f1_macro, conf_matrix
