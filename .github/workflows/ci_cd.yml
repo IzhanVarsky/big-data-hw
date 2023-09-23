@@ -1,10 +1,15 @@
 name: CI (build and push docker image to dockerhub) and CD (run tests in docker container)
 
+env:
+  TARGET_BRANCH: "hw2"
+  IMAGE_NAME: "bigdata-fashion-mnist-classifier"
+  DOCKER_IMAGE_TAG_NAME: "izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}"
+
 on:
   push:
-    branches: [ "hw2" ]
+    branches: [ ${{ env.TARGET_BRANCH }} ]
   pull_request:
-    branches: [ "hw2" ]
+    branches: [ ${{ env.TARGET_BRANCH }} ]
   workflow_dispatch:
 
 jobs:
@@ -13,11 +18,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set image and tag names in env
-        env:
-          IMAGE_NAME: bigdata-fashion-mnist-classifier
-        run: |
-          echo "DOCKER_IMAGE_TAG_NAME=izhanvarsky/$IMAGE_NAME:hw2" >> "$GITHUB_ENV"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
