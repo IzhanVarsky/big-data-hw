@@ -5,7 +5,7 @@ import unittest
 import greenplumpython as gp
 import pandas as pd
 import yaml
-
+import os
 
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
 
@@ -51,23 +51,12 @@ class TestTrainingResults(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Training results testing")
-    parser.add_argument("--db-user")
-    parser.add_argument("--db-password")
-    parser.add_argument("--db-name")
-    parser.add_argument("--db-host")
-    parser.add_argument("--db-port")
-
-    args = parser.parse_args()
-
-    print(args)
-
     params = dict(
-        user=args.db_user,
-        password=args.db_password,
-        host=args.db_host,
-        port=args.db_port,
-        dbname=args.db_name
+        user=os.environ['POSTGRES_USER'],
+        password=os.environ['POSTGRES_PASSWORD'],
+        dbname=os.environ['POSTGRES_DBNAME'],
+        host=os.environ['POSTGRES_DBHOST'],
+        port=os.environ['POSTGRES_DBPORT'],
     )
 
     db = gp.database(params=params)
