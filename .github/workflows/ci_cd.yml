@@ -3,10 +3,10 @@ name: CI (build and push docker image to dockerhub) and CD (run tests in docker 
 on:
   push:
     branches:
-      - ${{ env.TARGET_BRANCH }}
+      - hw2
   pull_request:
     branches:
-      - ${{ env.TARGET_BRANCH }}
+      - hw2
   workflow_dispatch:
 
 env:
