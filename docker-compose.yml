@@ -5,7 +5,12 @@ services:
     command: >
       sh -c "
         coverage run src/unit_tests/test_datasets.py &&
-        coverage run src/unit_tests/test_training_results.py &&
+        coverage run src/unit_tests/test_training_results.py \
+          --db-user=${POSTGRES_USER} \
+          --db-password=${POSTGRES_PASSWORD} \
+          --db-name=${POSTGRES_DBNAME} &&
+          --db-host=greenplum &&
+          --db-port=5432 &&
         coverage report -m
         "
     image: ${DOCKER_IMAGE_TAG_NAME}
@@ -25,7 +30,7 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=password
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DBNAME}
+      - POSTGRES_DBNAME=${POSTGRES_DBNAME}
     restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DBNAME}" ]
