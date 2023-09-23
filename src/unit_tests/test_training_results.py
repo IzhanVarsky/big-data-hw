@@ -6,10 +6,10 @@ import greenplumpython as gp
 import pandas as pd
 import yaml
 
-import db_utils
 
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
 
+import db_utils
 from dataset_utils import get_FashionMNIST_dataloaders
 from fashion_mnist_classifier import get_FashionMNIST_classifier
 
