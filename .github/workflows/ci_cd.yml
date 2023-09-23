@@ -16,6 +16,10 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
+    env:
+      DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -34,8 +38,6 @@ jobs:
         run: |
           dvc remote modify storage password ${{ secrets.MY_SSH_SERVER_PASSWORD }}
           dvc pull
-      - env:
-          DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -50,6 +52,7 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DBNAME: ${{ secrets.POSTGRES_DBNAME }}
+      DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
 
     steps:
       - name: Checkout
