@@ -30,6 +30,6 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=password
     restart: always
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DBNAME}" ]
-      timeout: 20s
-      retries: 5
+      test: [ "CMD", "pg_isready", "-U", "$POSTGRES_USER", "-d", "$POSTGRES_DBNAME" ]
+      timeout: 40s
+      retries: 10
