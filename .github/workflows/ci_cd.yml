@@ -43,7 +43,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: $DOCKER_IMAGE_TAG_NAME
+          tags: ${{ env.DOCKER_IMAGE_TAG_NAME }}
   cd:
     needs: ci
     runs-on: ubuntu-latest
