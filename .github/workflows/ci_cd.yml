@@ -3,16 +3,15 @@ name: CI (build and push docker image to dockerhub) and CD (run tests in docker 
 on:
   push:
     branches:
-      - hw2
+      - ${{ env.TARGET_BRANCH }}
   pull_request:
     branches:
-      - hw2
+      - ${{ env.TARGET_BRANCH }}
   workflow_dispatch:
 
 env:
   TARGET_BRANCH: hw2
   IMAGE_NAME: bigdata-fashion-mnist-classifier
-  DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
 
 jobs:
   ci:
@@ -40,7 +39,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.DOCKER_IMAGE_TAG_NAME }}
+          tags: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
   cd:
     needs: ci
     runs-on: ubuntu-latest
@@ -58,7 +57,7 @@ jobs:
           echo POSTGRES_USER="${{ secrets.POSTGRES_USER }}" >> .env
           echo POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo POSTGRES_DBNAME="${{ secrets.POSTGRES_DBNAME }}" >> .env
-          echo DOCKER_IMAGE_TAG_NAME="${{ env.DOCKER_IMAGE_TAG_NAME }}" >> .env
+          echo DOCKER_IMAGE_TAG_NAME="izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}" >> .env
       - name: Pull with compose
         run: docker-compose pull
       - name: Run tests
