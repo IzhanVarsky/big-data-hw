@@ -34,12 +34,14 @@ jobs:
         run: |
           dvc remote modify storage password ${{ secrets.MY_SSH_SERVER_PASSWORD }}
           dvc pull
+      - env:
+          DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
+          tags: ${{ env.DOCKER_IMAGE_TAG_NAME }}
   cd:
     needs: ci
     runs-on: ubuntu-latest
