@@ -43,6 +43,13 @@ jobs:
   cd:
     needs: ci
     runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DBNAME: ${{ secrets.POSTGRES_DBNAME }}
+      DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -51,13 +58,6 @@ jobs:
         with:
           username: izhanvarsky
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Create .env file
-        run: |
-          touch .env
-          echo POSTGRES_USER="${{ secrets.POSTGRES_USER }}" >> .env
-          echo POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" >> .env
-          echo POSTGRES_DBNAME="${{ secrets.POSTGRES_DBNAME }}" >> .env
-          echo DOCKER_IMAGE_TAG_NAME="izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}" >> .env
       - name: Pull with compose
         run: docker-compose pull
       - name: Run tests
