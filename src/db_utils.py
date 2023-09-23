@@ -8,11 +8,11 @@ def write_results(db: gp.Database, dataf: pandas.DataFrame):
     records = dataf.to_records(index=False).tolist()
 
     # Prepare the SQL statement
-    sql = f"INSERT INTO model_results ({cols}) VALUES (%s)"
+    sql = f"INSERT INTO model_results (%s) VALUES (%s)"
 
     # Execute the SQL statement to insert the data
     cur = db._conn.cursor()
-    cur.executemany(sql, records)
+    cur.executemany(sql, [columns, records])
     db._conn.commit()
 
     # Close the cursor and connection
