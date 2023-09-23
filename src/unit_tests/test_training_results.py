@@ -63,4 +63,7 @@ if __name__ == "__main__":
     t = db.create_dataframe(table_name="model_weights")
     ckpt_path = list(t)[-1]['model_path']
 
+    logger.info("Results table:")
+    logger.info(db.create_dataframe(table_name="model_results"))
+
     unittest.main()

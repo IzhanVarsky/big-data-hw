@@ -33,7 +33,7 @@ services:
         coverage run src/unit_tests/test_training_results.py &&
         coverage report -m
         "
-    image: ${DOCKER_IMAGE_TAG_NAME}
+    image: kek:latest
     links:
       - "greenplum:database"
     depends_on:
