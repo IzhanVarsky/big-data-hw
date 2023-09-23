@@ -60,6 +60,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    print(args)
+
     params = dict(
         user=args.db_user,
         password=args.db_password,
