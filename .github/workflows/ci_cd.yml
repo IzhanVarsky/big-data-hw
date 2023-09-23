@@ -48,7 +48,7 @@ jobs:
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DBNAME: ${{ secrets.POSTGRES_DBNAME }}
-      DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
+      DOCKER_IMAGE_TAG_NAME: izhanvarsky/$IMAGE_NAME:$TARGET_BRANCH
 
     steps:
       - name: Checkout
