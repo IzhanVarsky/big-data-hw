@@ -6,4 +6,4 @@ model:
 train_params:
   lr: 1e-4
 
-ckpt_path: "checkpoints/CNNModel_FashionMNIST_best_metric_model.pth"
+#ckpt_path: "checkpoints/CNNModel_FashionMNIST_best_metric_model.pth"

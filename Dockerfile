@@ -7,4 +7,6 @@ RUN apt-get update
 WORKDIR /app
 ADD . /app
 
-RUN pip install -r requirements.txt
+RUN pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+RUN pip3 install -r requirements.txt

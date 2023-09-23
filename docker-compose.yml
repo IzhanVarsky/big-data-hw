@@ -12,7 +12,7 @@ services:
     links:
       - "greenplum:database"
     depends_on:
-      postgres:
+      greenplum:
         condition: service_healthy
   greenplum:
     container_name: database
