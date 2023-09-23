@@ -1,10 +1,5 @@
 name: CI (build and push docker image to dockerhub) and CD (run tests in docker container)
 
-env:
-  TARGET_BRANCH: hw2
-  IMAGE_NAME: bigdata-fashion-mnist-classifier
-  DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
-
 on:
   push:
     branches:
@@ -13,6 +8,11 @@ on:
     branches:
       - ${{ env.TARGET_BRANCH }}
   workflow_dispatch:
+
+env:
+  TARGET_BRANCH: hw2
+  IMAGE_NAME: bigdata-fashion-mnist-classifier
+  DOCKER_IMAGE_TAG_NAME: izhanvarsky/${{ env.IMAGE_NAME }}:${{ env.TARGET_BRANCH }}
 
 jobs:
   ci:
