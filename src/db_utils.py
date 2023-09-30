@@ -48,10 +48,10 @@ def get_db_credentials(ansible_password=None) -> Dict:
     if ansible_password is None:
         logger.warning('Ansible password was not passed! '
                        'Trying to get DB credentials from ENV')
+        credentials = get_db_credentials_from_env()
     else:
         logger.info('Using ansible to get DB credentials')
-    credentials = get_db_credentials_from_env() if ansible_password is None \
-        else get_db_credentials_from_vault(ansible_password)
+        credentials = get_db_credentials_from_vault(ansible_password)
     return db_credential_to_dict(*credentials)
 
 
