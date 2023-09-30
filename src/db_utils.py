@@ -1,8 +1,17 @@
 import os
 from enum import Enum
+from typing import Dict, List
 
 import greenplumpython as gp
 import pandas
+
+from ansible_credential_utils import read_credentials_from_file
+
+from logger import Logger
+
+logger = Logger(show=True).get_logger(__name__)
+
+ANSIBLE_DB_CREDENTIALS_FILEPATH = 'db.credentials'
 
 
 class TABLE_NAME(Enum):
@@ -10,19 +19,40 @@ class TABLE_NAME(Enum):
     model_results = "model_results"
 
 
-def get_db_credentials_from_env():
+def db_credential_to_dict(user, password, dbname, host, port) -> Dict:
     params = dict(
-        user=os.environ['POSTGRES_USER'],
-        password=os.environ['POSTGRES_PASSWORD'],
-        dbname=os.environ['POSTGRES_DBNAME'],
-        host=os.environ['POSTGRES_DBHOST'],
-        port=os.environ['POSTGRES_DBPORT'],
+        user=user,
+        password=password,
+        dbname=dbname,
+        host=host,
+        port=port,
     )
     return params
 
 
-def get_db_credentials():
-    return get_db_credentials_from_env()
+def get_db_credentials_from_env() -> List[str]:
+    return [os.environ['POSTGRES_USER'],
+            os.environ['POSTGRES_PASSWORD'],
+            os.environ['POSTGRES_DBNAME'],
+            os.environ['POSTGRES_DBHOST'],
+            os.environ['POSTGRES_DBPORT'],
+            ]
+
+
+def get_db_credentials_from_vault(ansible_password) -> List[str]:
+    data = read_credentials_from_file(ANSIBLE_DB_CREDENTIALS_FILEPATH, ansible_password)
+    return data.split()
+
+
+def get_db_credentials(ansible_password=None) -> Dict:
+    if ansible_password is None:
+        logger.warning('Ansible password was not passed! '
+                       'Trying to get DB credentials from ENV')
+    else:
+        logger.info('Using ansible to get DB credentials')
+    credentials = get_db_credentials_from_env() if ansible_password is None \
+        else get_db_credentials_from_vault(ansible_password)
+    return db_credential_to_dict(*credentials)
 
 
 def read_db_table(db: gp.Database, table_name: TABLE_NAME):

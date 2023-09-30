@@ -3,14 +3,14 @@ name: CI (build and push docker image to dockerhub) and CD (run tests in docker 
 on:
   push:
     branches:
-      - hw2
+      - hw3
   pull_request:
     branches:
-      - hw2
+      - hw3
   workflow_dispatch:
 
 env:
-  TARGET_BRANCH: hw2
+  TARGET_BRANCH: hw3
   IMAGE_NAME: bigdata-fashion-mnist-classifier
 
 jobs:
@@ -49,6 +49,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      ANSIBLE_PASSWORD: ${{ secrets.ANSIBLE_PASSWORD }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DBNAME: ${{ secrets.POSTGRES_DBNAME }}

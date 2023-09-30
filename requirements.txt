@@ -9,3 +9,5 @@ pyyaml
 coverage
 pandas
 greenplum-python==1.0.1
+
+ansible-vault==2.1.0

@@ -53,7 +53,11 @@ class TestTrainingResults(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    db_credentials = db_utils.get_db_credentials()
+    ansible_password = os.environ['ANSIBLE_PASSWORD']
+    if ansible_password is None:
+        exit(-1)
+
+    db_credentials = db_utils.get_db_credentials(ansible_password)
     db = gp.database(params=db_credentials)
 
     t = db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights)

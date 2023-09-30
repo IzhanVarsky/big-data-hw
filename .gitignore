@@ -6,3 +6,5 @@ checkpoints/*.pth
 .coverage
 *.zip
 .env
+
+src/generate_ansible_credentials.py
