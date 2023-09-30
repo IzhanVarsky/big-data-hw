@@ -39,31 +39,27 @@ class TestTrainingResults(unittest.TestCase):
         logger.info(f"Testing classifier metrics...")
         epoch_loss, epoch_acc, f1_macro, conf_matrix = \
             self.classifier.test_model(self.dataloaders['test'])
+
         data = pd.DataFrame({
             "epoch_loss": [epoch_loss],
             "epoch_acc": [epoch_acc],
             "f1_macro": [f1_macro],
         })
         db_utils.write_results(db, data)
+
         self.assertTrue(epoch_acc >= 0.7)
         self.assertTrue(f1_macro >= 0.7)
         logger.info(f"Tests passed!")
 
 
 if __name__ == "__main__":
-    params = dict(
-        user=os.environ['POSTGRES_USER'],
-        password=os.environ['POSTGRES_PASSWORD'],
-        dbname=os.environ['POSTGRES_DBNAME'],
-        host=os.environ['POSTGRES_DBHOST'],
-        port=os.environ['POSTGRES_DBPORT'],
-    )
+    db_credentials = db_utils.get_db_credentials()
+    db = gp.database(params=db_credentials)
 
-    db = gp.database(params=params)
-    t = db.create_dataframe(table_name="model_weights")
+    t = db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights)
     ckpt_path = list(t)[-1]['model_path']
 
     logger.info("Results table:")
-    logger.info(db.create_dataframe(table_name="model_results"))
+    logger.info(db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights))
 
     unittest.main()
