@@ -37,12 +37,12 @@ def get_producer(kafka_host, kafka_port) -> kafka.KafkaProducer:
     return kafka.KafkaProducer(bootstrap_servers=bootstrap_servers)
 
 
-def get_consumer(kafka_host, kafka_port, topic, value_deserializer) -> kafka.KafkaConsumer:
+def get_consumer(kafka_host, kafka_port, topic) -> kafka.KafkaConsumer:
     bootstrap_servers = get_bootstrap_servers(kafka_host, kafka_port)
     return kafka.KafkaConsumer(
         topic,
         bootstrap_servers=bootstrap_servers,
-        value_deserializer=value_deserializer,
+        value_deserializer=lambda x: x.decode('utf-8'),
         fetch_max_wait_ms=300_000,  # 5 minutes
         auto_offset_reset="earliest"
     )

@@ -67,14 +67,12 @@ if __name__ == "__main__":
         kafka_host=kafka_host,
         kafka_port=kafka_port,
         topic=kafka_utils.CKPT_TOPIC,
-        value_deserializer=lambda x: x.decode('utf-8'),
     )
 
     predictions_consumer = kafka_utils.get_consumer(
         kafka_host=kafka_host,
         kafka_port=kafka_port,
         topic=kafka_utils.PREDICTIONS_TOPIC,
-        value_deserializer=lambda x: x.decode('utf-8').split(),
     )
 
     db_credentials = db_utils.get_db_credentials(ansible_password)
@@ -85,17 +83,18 @@ if __name__ == "__main__":
     producer.send(kafka_utils.CKPT_TOPIC, list(t)[-1]['model_path'].encode('utf-8'))
 
     for msg in ckpt_consumer:
-        ckpt_path = msg
         logger.info(f"CKPT Consumer got msg: {msg}")
+        ckpt_path = msg.value
         unittest.main()
 
-    for (epoch_loss, epoch_acc, f1_macro) in predictions_consumer:
+    for msg in predictions_consumer:
+        logger.info(f"PREDICTIONS Consumer got msg: {msg}")
+        epoch_loss, epoch_acc, f1_macro = msg.value.split()
         data = pd.DataFrame({
             "epoch_loss": [epoch_loss],
             "epoch_acc": [epoch_acc],
             "f1_macro": [f1_macro],
         })
-        logger.info(f"PREDICTIONS Consumer got msg: {data}")
         db_utils.write_results(db, data)
 
     logger.info("Results table:")
