@@ -87,8 +87,9 @@ if __name__ == "__main__":
     msg = kafka_utils.get_msg_from_consumer(ckpt_consumer)
     logger.info(f"CKPT Consumer got msg: {msg}")
     ckpt_path = msg.value
-    unittest.main()
+    unittest.main(exit=False)
 
+    logger.info(f"Running PREDICTIONS Consumer...")
     msg = kafka_utils.get_msg_from_consumer(predictions_consumer)
     logger.info(f"PREDICTIONS Consumer got msg: {msg}")
     epoch_loss, epoch_acc, f1_macro = msg.value.split()
