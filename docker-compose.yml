@@ -66,9 +66,8 @@ services:
       "
     links:
       - "greenplum:database"
-      - 'kafka:kafka'
     depends_on:
+      kafka:
+        condition: service_started
       greenplum:
         condition: service_healthy
-      init-kafka:
-        condition: service_completed_successfully
