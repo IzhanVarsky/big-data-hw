@@ -59,7 +59,8 @@ services:
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
-      echo 'Running tests...'
+      sleep 10s &&
+      echo 'Running tests...' &&
       coverage run src/unit_tests/test_datasets.py &&
       coverage run src/unit_tests/test_training_results.py &&
       coverage report -m
