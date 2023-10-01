@@ -46,3 +46,9 @@ def get_consumer(kafka_host, kafka_port, topic) -> kafka.KafkaConsumer:
         fetch_max_wait_ms=300_000,  # 5 minutes
         auto_offset_reset="earliest"
     )
+
+
+def get_msg_from_consumer(consumer: kafka.KafkaConsumer):
+    while True:
+        for msg in consumer:
+            return msg

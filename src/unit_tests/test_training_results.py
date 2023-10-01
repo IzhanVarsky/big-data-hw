@@ -84,20 +84,20 @@ if __name__ == "__main__":
     producer.send(kafka_utils.CKPT_TOPIC, list(t)[-1]['model_path'].encode('utf-8'))
     logger.info(f"Producer just sent msg with CKPT topic")
 
-    for msg in ckpt_consumer:
-        logger.info(f"CKPT Consumer got msg: {msg}")
-        ckpt_path = msg.value
-        unittest.main()
+    msg = kafka_utils.get_msg_from_consumer(ckpt_consumer)
+    logger.info(f"CKPT Consumer got msg: {msg}")
+    ckpt_path = msg.value
+    unittest.main()
 
-    for msg in predictions_consumer:
-        logger.info(f"PREDICTIONS Consumer got msg: {msg}")
-        epoch_loss, epoch_acc, f1_macro = msg.value.split()
-        data = pd.DataFrame({
-            "epoch_loss": [epoch_loss],
-            "epoch_acc": [epoch_acc],
-            "f1_macro": [f1_macro],
-        })
-        db_utils.write_results(db, data)
+    msg = kafka_utils.get_msg_from_consumer(predictions_consumer)
+    logger.info(f"PREDICTIONS Consumer got msg: {msg}")
+    epoch_loss, epoch_acc, f1_macro = msg.value.split()
+    data = pd.DataFrame({
+        "epoch_loss": [epoch_loss],
+        "epoch_acc": [epoch_acc],
+        "f1_macro": [f1_macro],
+    })
+    db_utils.write_results(db, data)
 
     logger.info("Results table:")
     logger.info(db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights))
