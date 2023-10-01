@@ -9,7 +9,8 @@ ANSIBLE_KAFKA_CREDENTIALS_FILEPATH = 'kafka.credentials'
 
 def get_kafka_credentials_from_vault(ansible_password):
     data = read_credentials_from_file(ANSIBLE_KAFKA_CREDENTIALS_FILEPATH, ansible_password)
-    return data.split()
+    host, port = data.split()
+    return host, "29092"
 
 
 def get_producer(kafka_host, kafka_port) -> kafka.KafkaProducer:
