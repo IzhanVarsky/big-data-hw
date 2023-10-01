@@ -55,6 +55,9 @@ if __name__ == "__main__":
         exit(-1)
 
     kafka_host, kafka_port = kafka_utils.get_kafka_credentials_from_vault(ansible_password)
+
+    kafka_utils.create_topics(kafka_host, kafka_port)
+
     producer = kafka_utils.get_producer(
         kafka_host=kafka_host,
         kafka_port=kafka_port
