@@ -59,7 +59,11 @@ if __name__ == "__main__":
     t = db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights)
     ckpt_path = list(t)[-1]['model_path']
 
-    logger.info("Results table:")
-    logger.info(db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights))
+    unittest.main(exit=False)
 
-    unittest.main()
+    logger.info("=" * 50)
+    logger.info("Results table:")
+    logger.info(db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_results))
+    logger.info("-" * 20)
+    logger.info("Weights table:")
+    logger.info(db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights))
