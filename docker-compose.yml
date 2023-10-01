@@ -30,6 +30,7 @@ services:
     command: bash -c "
       sleep 5s &&
       kafka-topics --create --topic=kafka-predictions --if-not-exists --bootstrap-server=kafka:9092 &&
+      sleep 5s &&
       kafka-topics --create --topic=kafka-ckpt --if-not-exists --bootstrap-server=kafka:9092
       "
 
@@ -51,6 +52,9 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
+    depends_on:
+      kafka-topics-generator:
+        condition: service_completed_successfully
 
   fashion-mnist-classifier:
     build: .
@@ -74,5 +78,5 @@ services:
     depends_on:
       greenplum:
         condition: service_healthy
-      kafka-topics-generator:
-        condition: service_completed_successfully
+#      kafka-topics-generator:
+#        condition: service_completed_successfully
