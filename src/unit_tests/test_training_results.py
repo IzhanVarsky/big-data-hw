@@ -7,10 +7,9 @@ import pandas as pd
 import yaml
 import os
 
-import kafka_utils
-
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
 
+import kafka_utils
 import db_utils
 from dataset_utils import get_FashionMNIST_dataloaders
 from fashion_mnist_classifier import get_FashionMNIST_classifier
