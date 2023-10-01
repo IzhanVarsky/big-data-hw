@@ -41,7 +41,8 @@ class TestTrainingResults(unittest.TestCase):
         epoch_loss, epoch_acc, f1_macro, conf_matrix = \
             self.classifier.test_model(self.dataloaders['test'])
 
-        producer.send(kafka_utils.PREDICTIONS_TOPIC, f'{epoch_loss} {epoch_acc} {f1_macro}')
+        data = f'{epoch_loss} {epoch_acc} {f1_macro}'.encode('utf-8')
+        producer.send(kafka_utils.PREDICTIONS_TOPIC, data)
 
         self.assertTrue(epoch_acc >= 0.7)
         self.assertTrue(f1_macro >= 0.7)
@@ -81,7 +82,7 @@ if __name__ == "__main__":
 
     t = db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights)
 
-    producer.send(kafka_utils.CKPT_TOPIC, list(t)[-1]['model_path'])
+    producer.send(kafka_utils.CKPT_TOPIC, list(t)[-1]['model_path'].encode('utf-8'))
 
     for msg in ckpt_consumer:
         ckpt_path = msg
