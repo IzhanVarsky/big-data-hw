@@ -3,14 +3,14 @@ name: CI (build and push docker image to dockerhub) and CD (run tests in docker 
 on:
   push:
     branches:
-      - hw3
+      - hw4
   pull_request:
     branches:
-      - hw3
+      - hw4
   workflow_dispatch:
 
 env:
-  TARGET_BRANCH: hw3
+  TARGET_BRANCH: hw4
   IMAGE_NAME: bigdata-fashion-mnist-classifier
 
 jobs:
