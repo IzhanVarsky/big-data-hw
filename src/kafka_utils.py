@@ -5,7 +5,7 @@ from kafka.admin import NewTopic
 from ansible_credential_utils import read_credentials_from_file
 
 CKPT_TOPIC = "kafka-ckpt"
-PREDICTIONS_TOPIC = "kafka-predictions"
+METRICS_TOPIC = "kafka-metrics"
 ANSIBLE_KAFKA_CREDENTIALS_FILEPATH = 'kafka.credentials'
 
 
@@ -21,7 +21,7 @@ def create_topics(kafka_host, kafka_port):
     )
 
     topic_list = []
-    for name in [CKPT_TOPIC, PREDICTIONS_TOPIC]:
+    for name in [CKPT_TOPIC, METRICS_TOPIC]:
         topic_list.append(NewTopic(name=name, num_partitions=1, replication_factor=1))
     admin_client.create_topics(new_topics=topic_list, validate_only=False)
 
@@ -29,7 +29,7 @@ def create_topics(kafka_host, kafka_port):
 def get_kafka_credentials_from_vault(ansible_password):
     data = read_credentials_from_file(ANSIBLE_KAFKA_CREDENTIALS_FILEPATH, ansible_password)
     host, port = data.split()
-    return host, "29092"
+    return host, port
 
 
 def get_producer(kafka_host, kafka_port) -> kafka.KafkaProducer:

@@ -42,8 +42,8 @@ class TestTrainingResults(unittest.TestCase):
             self.classifier.test_model(self.dataloaders['test'])
 
         data = f'{epoch_loss} {epoch_acc} {f1_macro}'.encode('utf-8')
-        producer.send(kafka_utils.PREDICTIONS_TOPIC, data)
-        logger.info(f"Producer just sent msg with PREDICTIONS topic")
+        producer.send(kafka_utils.METRICS_TOPIC, data)
+        logger.info(f"Producer just sent msg with METRICS topic")
 
         self.assertTrue(epoch_acc >= 0.7)
         self.assertTrue(f1_macro >= 0.7)
@@ -70,10 +70,10 @@ if __name__ == "__main__":
         topic=kafka_utils.CKPT_TOPIC,
     )
 
-    predictions_consumer = kafka_utils.get_consumer(
+    metrics_consumer = kafka_utils.get_consumer(
         kafka_host=kafka_host,
         kafka_port=kafka_port,
-        topic=kafka_utils.PREDICTIONS_TOPIC,
+        topic=kafka_utils.METRICS_TOPIC,
     )
 
     db_credentials = db_utils.get_db_credentials(ansible_password)
@@ -89,9 +89,9 @@ if __name__ == "__main__":
     ckpt_path = msg.value
     unittest.main(exit=False)
 
-    logger.info(f"Running PREDICTIONS Consumer...")
-    msg = kafka_utils.get_msg_from_consumer(predictions_consumer)
-    logger.info(f"PREDICTIONS Consumer got msg: {msg}")
+    logger.info(f"Running METRICS Consumer...")
+    msg = kafka_utils.get_msg_from_consumer(metrics_consumer)
+    logger.info(f"METRICS Consumer got msg: {msg}")
     epoch_loss, epoch_acc, f1_macro = msg.value.split()
     data = pd.DataFrame({
         "epoch_loss": [epoch_loss],
