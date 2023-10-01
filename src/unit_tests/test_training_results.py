@@ -7,6 +7,8 @@ import pandas as pd
 import yaml
 import os
 
+import kafka_utils
+
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
 
 import db_utils
@@ -40,12 +42,7 @@ class TestTrainingResults(unittest.TestCase):
         epoch_loss, epoch_acc, f1_macro, conf_matrix = \
             self.classifier.test_model(self.dataloaders['test'])
 
-        data = pd.DataFrame({
-            "epoch_loss": [epoch_loss],
-            "epoch_acc": [epoch_acc],
-            "f1_macro": [f1_macro],
-        })
-        db_utils.write_results(db, data)
+        producer.send(kafka_utils.PREDICTIONS_TOPIC, f'{epoch_loss} {epoch_acc} {f1_macro}')
 
         self.assertTrue(epoch_acc >= 0.7)
         self.assertTrue(f1_macro >= 0.7)
@@ -57,13 +54,46 @@ if __name__ == "__main__":
     if ansible_password is None:
         exit(-1)
 
+    kafka_host, kafka_port = kafka_utils.get_kafka_credentials_from_vault(ansible_password)
+    producer = kafka_utils.get_producer(
+        kafka_host=kafka_host,
+        kafka_port=kafka_port
+    )
+
+    ckpt_consumer = kafka_utils.get_consumer(
+        kafka_host=kafka_host,
+        kafka_port=kafka_port,
+        topic=kafka_utils.CKPT_TOPIC,
+        value_deserializer=lambda x: x.decode('utf-8'),
+    )
+
+    predictions_consumer = kafka_utils.get_consumer(
+        kafka_host=kafka_host,
+        kafka_port=kafka_port,
+        topic=kafka_utils.PREDICTIONS_TOPIC,
+        value_deserializer=lambda x: x.decode('utf-8').split(),
+    )
+
     db_credentials = db_utils.get_db_credentials(ansible_password)
     db = gp.database(params=db_credentials)
 
     t = db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights)
-    ckpt_path = list(t)[-1]['model_path']
+
+    producer.send(kafka_utils.CKPT_TOPIC, list(t)[-1]['model_path'])
+
+    for msg in ckpt_consumer:
+        ckpt_path = msg
+        logger.info(f"CKPT Consumer got msg: {msg}")
+        unittest.main()
+
+    for (epoch_loss, epoch_acc, f1_macro) in predictions_consumer:
+        data = pd.DataFrame({
+            "epoch_loss": [epoch_loss],
+            "epoch_acc": [epoch_acc],
+            "f1_macro": [f1_macro],
+        })
+        logger.info(f"PREDICTIONS Consumer got msg: {data}")
+        db_utils.write_results(db, data)
 
     logger.info("Results table:")
     logger.info(db_utils.read_db_table(db, table_name=db_utils.TABLE_NAME.model_weights))
-
-    unittest.main()

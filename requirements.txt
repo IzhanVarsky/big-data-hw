@@ -9,5 +9,5 @@ pyyaml
 coverage
 pandas
 greenplum-python==1.0.1
-
 ansible-vault==2.1.0
+kafka-python==2.0.2
