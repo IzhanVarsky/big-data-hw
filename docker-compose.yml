@@ -96,9 +96,6 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    depends_on:
-      init-kafka:
-        condition: service_completed_successfully
 
   fashion-mnist-classifier:
     container_name: fashion-mnist-classifier
@@ -111,17 +108,19 @@ services:
     #      - POSTGRES_DBNAME=$POSTGRES_DBNAME
     #      - POSTGRES_DBHOST=greenplum
     #      - POSTGRES_DBPORT=5432
-    command: >
-      bash -c "
-        coverage run src/unit_tests/test_datasets.py &&
-        coverage run src/unit_tests/test_training_results.py &&
-        coverage report -m
-        "
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      coverage run src/unit_tests/test_datasets.py &&
+      coverage run src/unit_tests/test_training_results.py &&
+      coverage report -m
+      "
     image: ${DOCKER_IMAGE_TAG_NAME}
     links:
       - "greenplum:database"
+      - 'kafka:kafka'
     depends_on:
       greenplum:
         condition: service_healthy
-#      kafka-topics-generator:
-#        condition: service_completed_successfully
+      init-kafka:
+        condition: service_completed_successfully
